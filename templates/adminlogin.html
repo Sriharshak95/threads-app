@@ -1,0 +1,74 @@
+<style type="text/css">
+  nav{
+    display:none !important;
+  }
+  .navbar-fixed{
+    height:0 !important;
+  }
+  body{
+    background-color:#ffffff !important;
+  }
+</style>
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% load static %}
+{% block content %}
+      <section>
+       <div class="row" style="margin-bottom:0;">
+         <div class="col l6 h-100 padding-0">
+          <div class="threadHomeCover"></div>
+         </div>
+         <div class="col l6 h-100 padding-0">
+          <div class="home-content-block" style="margin-top:4rem;">
+            <h2 class="center-align" style="font-family: 'Niconne', cursive;">Threads</h2>
+            <hr>
+              <div class="center-align">
+
+
+            <form id="login_form" method="post" action="/adminlogin/">
+                    {% csrf_token %}
+              <div class="form-group has-feedback">
+                <input type="text" class="form-control" name="username" placeholder="Username" required="">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="password" class="form-control" name="password" placeholder="Password" required="">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+              </div>
+              <div class="row">
+                <!-- <div class="col-xs-8">
+                  <div class="checkbox icheck">
+                    <label>
+                      <input type="checkbox"> Remember Me
+                    </label>
+                  </div>
+                </div> -->
+                <!-- /.col -->
+                <div class="col-md-4"></div>
+                <div class="text-center col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                </div>
+                <div class="col-md-4"></div>
+                <!-- /.col -->
+              </div>
+            </form>
+
+
+              </div>
+          </div>
+         </div>
+       </div>
+     </section>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<!-- java script code -->
+
+{% endblock %}
+
+
+

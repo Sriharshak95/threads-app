@@ -1,0 +1,81 @@
+<style type="text/css">
+  nav{
+    display:none !important;
+  }
+  .navbar-fixed{
+    height:0 !important;
+  }
+  body{
+    background-color:#ffffff !important;
+  }
+  .q {
+  quotes: "“" "”" "‘" "’";
+}
+.q:before {
+    content: open-quote;
+}
+.q:after {
+    content: close-quote;
+}
+</style>
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% load static %}
+{% block content %}
+      <section>
+       <div class="row" style="margin-bottom:0;">
+         <!-- <div class="col l6 h-100 padding-0">
+          <div class="threadTopBand"></div>
+          <div class="threadBottomBand"></div>
+         </div> -->
+         <div class="col l12 h-100 padding-0">
+          <div class="home-content-block" style="margin-top:4rem;">
+            <h2 class="center-align" style="font-family: 'Niconne', cursive;">Threads</h2>
+            <hr>
+              <div class="center-align">
+          {% if request.path  %}
+                 <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;margin-top:4rem;" href="{% url 'social:begin' 'twitter' %}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+
+          {% else %}
+          <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+          {% endif %}
+              </div>
+             <ul class="collection center-align border-0" style="margin-top:3rem;">
+                <li class="collection-item border-bottom-0"><h5 class="q">Having meaningful conversation around your favourite books/podcast</h5></li>
+              </ul>
+          </div>
+          <!-- <div class="threadHomeCover"></div> -->
+         </div>
+       </div>
+     </section>
+
+<!-- <div class="container">
+ <div class="row">
+  <div class="col m3"></div>
+   <div class="col m6">
+    <div class="card">
+      <div class="card-content center-align">
+{% if request.path  %}
+       <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+
+{% else %}
+<a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+{% endif %}
+     </div>
+    </div>
+   </div>
+   <div class="col m3"></div>
+ </div>
+</div> -->
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<!-- java script code -->
+
+{% endblock %}
+
+
+

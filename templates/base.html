@@ -1,0 +1,86 @@
+{% load static %}
+
+<!-- {% load staticfiles %} -->
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <!--Import Google Icon Font-->
+      <link rel="stylesheet" type="text/css" href="{% static 'css/nouislider.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" >
+      <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <script src="{% static 'js/all.js' %}" type="text/javascript"></script>
+    </head>
+
+    <body>
+      <div class="navbar-fixed">
+        <ul id="dropdown1" class="dropdown-content">
+          <li><a href="/createpodcast/">Create</a></li>
+          <li><a href="/podcastpool/">View</a></li>
+        </ul>
+        <ul id="dropdown2" class="dropdown-content">
+          <li><a href="/{{user.username}}/books/">Books</a></li>
+          <li><a href="/podcastpool/">Collections</a></li>
+        </ul>
+      <nav>
+        <div class="nav-wrapper white">
+          <a href="/{{user.username}}/list/"  class="brand-logo">Threads</a>
+          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+          {% if user.is_authenticated %}
+          <!-- <li><a href="#"> {{ user.first_name }}-{{user.last_name}}</a> </li> -->
+            <li>
+<!--               <a href="/{{user.username}}/createlist/" class="nav-side-links" style="color:#1DA1F2;"><div>Create Thread</div>
+            </a> -->
+
+              <!-- <a class="createLink" href="/{{user.username}}/createlist/" >Create Thread</a> -->
+            </li>
+            <li><a title="click to view threads Info" href="#!" data-activates="dropdown2" class="dropdown-button nav-side-links">Threads</a></li>
+            <li><a title="click to view Podcast Info" href="#!" data-activates="dropdown1" class="dropdown-button nav-side-links">Collections</a></li>
+            <li><a title="Leaving soon?" href="/logout/" class="nav-side-links">SignOut</a></li>
+          {% else %}
+          {% if request.path  %}
+                 <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+
+          {% else %}
+          <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}" ><i class="fab fa-twitter"></i> Login With Twitter</a>
+          {% endif %}
+          {% endif %}
+          </ul>
+           <ul class="side-nav" id="mobile-demo">
+              <li>
+                <a class="createLink" href="/{{user.username}}/createlist/" >Create Thread</a>
+              </li>
+              <li><a href="/logout/">SignOut</a></li>
+           </ul>
+        </div>
+      </nav>
+    </div>
+
+{% block content %}
+
+{% endblock %}
+
+
+  <script type="text/javascript" src="{% static 'js/jquery.min.js' %}" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script src="{% static 'js/nouislider.js' %} " type="text/javascript"></script>
+  <script src="{% static 'js/script.js' %} " type="text/javascript"></script>
+
+
+{% block javascript %}
+<script>
+  $(function(){
+    $(".button-collapse").sideNav();
+  })
+</script>
+{% endblock %}
+      
+    </body>
+  </html>

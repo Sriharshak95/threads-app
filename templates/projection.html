@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<section style="padding-top:5rem;">
+  <div class="container">
+    <div class="row">
+      <div class="col m2"></div>
+      <div class="col m8">
+        <div class="input-field">
+          <input placeholder="Search for podcasts,links,books" id="podcastSearch" type="text" class="validate">
+          <a class="btn-floating podcastSearchButton"><i class="material-icons">search</i></a>
+        </div>
+         <ul class="collection podcastSearchDropBox" style="display:none;position:absolute;z-index:10;width:60%;">
+          <div class="liner" style="background:#fff;margin:0;">
+            <p style="margin:0;padding:10px;">No of Books Selected:&nbsp;<span class="bookSelectionCount"></span>
+              <a class="right inputBookStatus"><i class="material-icons">send</i></a>
+            </p>
+          </div>
+        </ul>
+      </div>
+      <div class="col m2"></div>
+    </div>
+  </div>
+</section>
+<section class="projection-section">
+	<div class="container">
+		<!-- <h4>Books Read by Guest</h4> -->
+    <div class="row">
+      <div class="col l2"></div>
+      <div class="col l8">
+        <div class="row completeBookList"></div>
+      </div>
+      <div class="col l2"></div>
+    </div>
+	</div>
+</section>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+$(function(){
+
+      $(document).on('keypress','#podcastSearch',function(e){
+        // e.preventDefault();
+        if(e.which==13){
+            if($.trim($(this).val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{
+              $('.bookSelectionCount').text("");
+              $(this).val("");
+              $(".podcastSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($(this).val());
+            }
+        }
+
+      });
+
+      $(document).on('click','.podcastSearchButton',function(){
+            if($.trim($("#podcastSearch").val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{   
+              $('.bookSelectionCount').text("");
+              $(".podcastSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($("#podcastSearch").val());
+            }
+      });
+
+      $(document).on('keyup','#podcastSearch',function(e){
+        if($(this).val()==""){
+          $(".podcastSearchDropBox").hide();
+        }
+      });
+
+
+      $(document).on('click','.globalSearchBoxContainer',function(){
+        $(this).toggleClass('activate');
+        if($(this).hasClass('activate')){
+          $(this).find('.ReadStatus').show();
+        }
+        else{
+          $(this).find('.ReadStatus').hide();
+        }
+        if($('.activate').length==0){
+        $('.bookSelectionCount').text("");
+        }
+        if($('.activate').length==1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' book', 1000);
+        }
+        if($('.activate').length>1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' books', 1000);
+        }
+      });
+
+      $(document).on('click','.inputBookStatus',function() {
+        if($(".activate").length>0){
+          $(".activate").each(function(){
+            var bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck;
+            bookImage = $(this).find('.globalSearchResultBookCover').attr("src");
+            bookTitle = $(this).find('.title').text();
+            bookAuthor = $(this).find('.bookAuthor').text();
+            bookPublisher = $(this).find('.bookPublisher').text();
+            readCheck = $(this).find('.readCheck').is(":checked");
+            readingCheck = $(this).find('.readingCheck').is(':checked');
+            tobeCheck = $(this).find('.tobeCheck').is(':checked');
+
+            utility.addBookStatus(bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck,"{{user.id}}");
+          }).promise().done(function(){
+            Materialize.toast('We have piled your books!!', 2000);
+            Materialize.toast('Start reading', 2000);
+            $('.podcastSearchDropBox').hide();
+            $('#podcastSearch').val('');
+          });
+        }
+      });
+
+              $.getJSON('/threadcard/api/listuserintresetbyuserread/2/',function(result){
+            if(result.length>0){
+                // $('.readTagSection').parent().show();
+              $.each(result,function(key,value){
+                    var persona = btoa(value.image);
+                    var personi = btoa(value.bookname);
+                    var persoid = btoa(value.id);
+                    var status = btoa(value.read);
+                  $('.completeBookList').append(" <div class='col l3'><a href='/podcast/?aj="+personi+"&gh="+persona+"&cg="+persoid+"&st="+status+"'><div title='Nice you have read this book' class='card hoverable' style='box-shadow:none;'> <div class='card-image'><img style='height:250px;filter:brightness(80%);' src='"+value.image+"'><span class='card-title font16' style='width:100%;background:linear-gradient(to bottom, rgba(255,0,0,0), rgba(0, 0, 0, 0.55))'>"+value.bookname+"</span></div></div></a><br/></div>").reverse();
+              }); 
+            }
+        });
+        $.getJSON('/threadcard/api/listuserintresetbyuserreading/2/',function(result){
+            if(result.length>0){
+                // $('.readTagSection').parent().show();
+              $.each(result,function(key,value){
+                    var persona = btoa(value.image);
+                    var personi = btoa(value.bookname);
+                    var persoid = btoa(value.id);
+                    var status = btoa(value.reading);
+                  $('.completeBookList').append(" <div class='col l3'><a href='/podcast/?aj="+personi+"&gh="+persona+"&cg="+persoid+"&st="+status+"'><div title='Nice you have read this book' class='card hoverable' style='box-shadow:none;'> <div class='card-image'><img style='height:250px;filter:brightness(80%);' src='"+value.image+"'><span class='card-title font16' style='width:100%;background:linear-gradient(to bottom, rgba(255,0,0,0), rgba(0, 0, 0, 0.55))'>"+value.bookname+"</span></div></div></a><br/></div>").reverse();
+              }); 
+            }
+        });
+        $.getJSON('/threadcard/api/listuserintresetbyusertoberead/2/',function(result){
+            if(result.length>0){
+                // $('.readTagSection').parent().show();
+              $.each(result,function(key,value){
+                    var persona = btoa(value.image);
+                    var personi = btoa(value.bookname);
+                    var persoid = btoa(value.id);
+                    var status = btoa(value.toberead);
+                  $('.completeBookList').append(" <div class='col l3'><a href='/podcast/?aj="+personi+"&gh="+persona+"&cg="+persoid+"&st="+status+"'><div title='Nice you have read this book' class='card hoverable' style='box-shadow:none;'> <div class='card-image'><img style='height:250px;filter:brightness(80%);' src='"+value.image+"'><span class='card-title font16' style='width:100%;background:linear-gradient(to bottom, rgba(255,0,0,0), rgba(0, 0, 0, 0.55))'>"+value.bookname+"</span></div></div></a><br/></div>").reverse();
+              }); 
+            }
+        });
+    
+});
+
+</script>
+{% endblock %}

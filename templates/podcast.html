@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<style type="text/css">
+        .creatorsDetail{
+          padding: 10px;
+        }
+        .timeline {
+  position: relative;
+}
+
+.timeline .timeline-event {
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.timeline .timeline-event .timeline-content {
+  position: relative;
+  width: calc(150% - 50%);
+}
+
+.timeline .timeline-event:first-child::before {
+  display: none;
+}
+
+.timeline .timeline-event:last-child::after {
+  display: none;
+}
+
+/*.timeline .timeline-event:nth-child(even) .timeline-content {
+  margin-left: calc(50% - 160px);
+}
+
+.timeline .timeline-event:nth-child(odd) .timeline-content {
+  margin-left: calc(50% - 160px);
+}*/
+
+.timeline .timeline-badge {
+  display: block;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #d2d2d2;
+  top: calc(50% - 20px);
+  /*right: calc(50% - 20px);*/
+  border-radius: 50%;
+  text-align: center;
+  cursor: default;
+}
+
+.timeline .timeline-badge i {
+  font-size: 25px;
+  line-height: 40px;
+}
+
+@media (max-width: 600px) {
+  .timeline .timeline-event .timeline-content {
+    width: calc(100% - 70px);
+  }
+  .timeline .timeline-event::before {
+    left: 19px;
+  }
+  .timeline .timeline-event::after {
+    left: 19px;
+  }
+  .timeline .timeline-event:nth-child(even) .timeline-content {
+    margin-left: 70px;
+  }
+  .timeline .timeline-event:nth-child(odd) .timeline-content {
+    margin-left: 70px;
+  }
+  .timeline .timeline-badge {
+    left: 0;
+  }
+}
+
+.podcastBookImage{
+  box-shadow:none;
+  border:1px solid #999;
+}
+
+.card-image>input{
+  display: none;
+  width:0;
+  height:0;
+}
+
+#myImg{
+  cursor: pointer;
+}
+
+.topic_panel{
+  padding: 0 10px 0 10px;
+}
+
+.fixed-action-btn{
+  position: absolute;
+  bottom:15px;
+}
+
+.fixed-action-btn.horizontal ul{
+  top: 15%;
+}
+.next,.threadIt{
+  font-size:12px;
+}
+.next{
+  border:1px solid #9fa8da;
+  color: #9fa8da;
+  font-weight:600;
+}
+
+.threadIt{
+  border:1px solid #a5d6a7;
+  color: #a5d6a7;
+  font-weight:600;
+}
+
+.createThread{
+    border: 1px solid #ff8f00;
+    color: #ff8f00;
+    font-weight:600;
+    background-color: #ffffff;
+}
+
+.submitViews{
+    border: 1px solid #FF0047;
+    color: #FF0047;
+    font-weight:600;
+    background-color: #ffffff;
+}
+
+.viewsSearchPanel{
+  padding: 0 10px 0 10px;
+  box-shadow:none;
+  border:1px solid #999;
+}
+
+.createThread.disabled,.next.disabled,.threadIt.disabled{
+    border:none;
+}
+
+#topic_name{
+  color:#585454;
+  font-size:14px;
+}
+
+.selectBookStatus{
+  border-radius: 3px;
+  padding: 2px;
+  color: #039be5;
+  background-color: #ffffff;
+  border:1px solid #039be5;
+}
+
+.selectBookStatus>input{
+  border-bottom: 0 !important;
+  margin:0 !important;
+  height:2rem !important;
+}
+
+.selectBookStatus>.caret{
+  color: #039be5 !important;
+}
+
+.selectBookStatus>ul>li>span{
+  color: #039be5 !important;
+  font-size:14px;
+}
+
+.card-title-content{
+  padding:10px;
+  text-align: center;
+}
+
+/*.row{
+  margin-bottom: 0;
+}*/
+      </style>
+      <div class="global" style="display:none;">{{user.id}}</div>
+
+    <div style="position:fixed;left:50px;display:none;">
+      <div class="Label card-panel white">
+        <div style="margin-bottom: 10px;" class="row valign-wrapper">
+          <div class="col s9">
+            <h5>{{user.first_name}} {{user.last_name}}
+            <a href="https://twitter.com/{{user.username}}" style="font-size:15px;" target="_blank"><i class="fab fa-twitter"></i></a>
+            </h5>
+          </div>
+          <div class="col s3">
+            <a href="https://twitter.com/{{user.username}}" target="_blank">
+              <img src="{{user.twitter_profiles.profile_image_url}}" alt="" class="circle responsive-img">
+            </a>
+          </div>
+        </div>
+        <div style="margin-bottom: 0;" class="row">
+          <div class="col s4">
+            <p style="margin-top:0;margin-bottom:0;"><span style="font-weight:bold;"><a href="#!" class="myReadBooks" title="click to view no of threads">{{totalthreadscreatedbyuser}}</a></span> threads</p>
+          </div>
+          <div class="col s6">
+            <a class="noOfSubscribed" title="click to view your subscribers" style="font-weight:bold;" href="#!">{{SubscribedCreators}}</a>
+            <span>subscribers</span>
+          </div>
+        </div>
+      </div>  
+      <!--Subscribed list-->
+      <div class="subscribedBox">
+      </div>
+    </div>
+<section style="margin-left:350px;">
+<div class="container">
+  <div class="row">
+        <div class="col m6">
+          <form id="bookCover" action="" title="Enter book name">
+            <div class="card podcastBookImage">
+              <div class="card-title-content">
+                <span id="topic_name" class="card-title">Card Title</span>
+              </div>
+              <div class="card-image">
+                <img id="myImg" style="height:380px;" src="images/sample-1.jpg">
+              </div>
+              <div class="card-content">
+                <div class="threadCreatorsImageList">
+                </div>
+              </div>
+            </div>
+          {% if user.is_authenticated %}
+            <div class="row">
+              <div class="col m6">
+                  <select class="selectBookStatus">
+                    <option value="" disabled selected>Have you read this book?</option>
+                    <option value="1">To be Read</option>
+                    <option value="2">Read</option>
+                    <option value="3">Reading</option>
+                  </select>
+              </div>
+              <div class="col m2">
+              </div>
+              <div class="col m4">
+                <button type="button" style="font-size:12px;" title="Click to start your thread" class="createThread right waves-effect waves-light btn-flat disabled">Start Thread</button>
+              </div>
+            </div>
+          {% else %}
+          <a class="waves-effect btn" style="color:#fff;background:#1DA1F2;" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}" ><i class="fab fa-twitter"></i> Login to threads</a>
+          {% endif %} 
+            <div class="showThreadsCreated">
+              <ul class="showThreadsCreatedByUser"></ul>
+            </div>
+          </form>
+      </div>
+    <div class="col m2">
+    </div>
+  </div>
+</div>
+</section>
+
+  <!-- Open Success modal and page redirection -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Congrats you have created a thread!</h4>
+      <p>you can continue to track them in created list.</p>
+    </div>
+    <div class="modal-footer">
+      <a href="/{{user.username}}/list/" class="modal-action modal-close waves-effect waves-green btn-flat">Continue</a>
+    </div>
+  </div> 
+
+  
+  <!-- ====================feedback Section================================= -->
+          {% if user.is_authenticated %}
+  <div id="feedback1" class="modal">
+    <div class="modal-content">
+      <p>Thanks for your concern to make this page look great. We'll assess your feedback and come back with more features.</p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div> 
+
+  <div class="card chat-box">
+    <div class="right-align closeChatBox" style="cursor:pointer;color:#cccccc;"><i class="fa fa-times-circle"></i></div>
+    <h5>Help Us Know</h5>
+    <form id="feedbackfromvalue">
+      <div class="input-field">
+        <input placeholder="Your email" id="email_id" name="email" type="email" class="validate" required>
+      </div>
+      <div class="input-field">
+        <textarea id="textarea1" name="comment" placeholder="Let us know how we can improve this page" class="materialize-textarea validate" required></textarea>
+      </div>
+      <button class="sendFeedbackForm waves-effect waves-light btn">send</button>
+    </form>
+  </div>
+  <button title="Make us Improve" class="feedBackForm"><img style="width:25px;" src="{% static 'images/quill.png' %}"></button>
+          {% endif %}
+
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript">
+      // console.log(getQuery);
+      utility.listCard('{{user.id}}');
+    $('select').material_select();
+      function getUrlVars()
+      {
+          var vars = [], hash;
+          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+          for(var i = 0; i < hashes.length; i++)
+          {
+              hash = hashes[i].split('=');
+              vars.push(hash[0]);
+              vars[hash[0]] = hash[1];
+          }
+          return vars;
+      }
+
+      if(window.location.search!==""){        
+        var getQuery = getUrlVars();
+        $("#topic_name").text(atob(getQuery.aj).replace(/ /g, ""));
+        $("#myImg").attr("src",atob(getQuery.gh));
+        $.getJSON("/podcastlist/"+atob(getQuery.cg)+"/",function(result){
+          $.each(result,function(key,value){
+            console.log(value);
+            $(".threadCreatorsImageList").append("<a href='/"+value.username+"/"+value.id+"/' class='podcastuser' data-id="+value.userid+"><img height='35' width='35' src='"+value.user_profile+"' alt='' class='circle'></a>");
+          });
+        });
+        $('.createThread').removeClass('disabled');
+      }
+
+      utility.listSubscribedCreators("{{user.id}}");
+      $('.noOfSubscribed').click(function(){
+        $('.subscribedBox').slideToggle();
+      });
+
+      // $(document).on('click','.podcastuser',function(){
+      //   var userId = $(this).attr("data-id");
+      //   $(".showThreadsCreatedByUser").empty();
+      //   $.getJSON('/threadcard/podcastthreadList/'+userId,function(result){
+      //     result = result.bookcover_data.reverse();
+
+      //     $.each(result,function(key,value){
+      //       $('.showThreadsCreatedByUser').append("<li class='collection-item avatar'>"+"<div title='Read this thread' class='card horizontal List'>"+"<div class='card-image' style='width:170px;'>"+"<a href='/"+value.created_by+"/"+value.bookcoverid+"'>"+"<img class='responsive-img' style='width:170px;' src='"+value.image+"' alt=''></a></div>"+"<div class='card-stacked'><div data-thread-id='"+value.bookcoverid+"' class='card-content thread-content'><p>"+value.name+"</p></div>"+"<div class='likeSection card-action'><div class='right'><div data-bookcover-id='"+value.bookcoverid+"' data-like-id='0' class='heart is_animating'><span class='likeCount'>"+value.likes+"</span></div></div></div>"+"</div></div></li>").reverse();            
+      //     });
+      //   });
+      // });
+
+
+      $('#feedbackfromvalue').on('submit',function(e){
+        e.preventDefault();
+        var comment = $('#textarea1').val();
+        var email = $('#email_id').val();
+        utility.submitFeedbackForm("{{user.username}}","{{user.id}}",email,comment);
+      });
+
+      $(".selectBookStatus").change(function(){
+        console.log("ni");
+      });
+      </script>
+{% endblock %}

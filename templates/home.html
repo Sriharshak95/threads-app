@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+
+<section style="padding-top:5rem;">
+  <div class="container">
+    <div class="row">
+      <div class="col m2"></div>
+      <div class="col m8">
+        <div class="input-field">
+          <input placeholder="Search for books" id="globalBookSearch" type="text" class="validate">
+          <a class="btn-floating globalSearchButton"><i class="material-icons">search</i></a>
+        </div>
+         <ul class="collection globalBookSearchDropBox" style="display:none;position:absolute;z-index:10;width:60%;">
+          <div class="liner" style="background:#fff;margin:0;">
+            <p style="margin:0;padding:10px;">No of Books Selected:&nbsp;<span class="bookSelectionCount"></span>
+              <a class="right inputBookStatus"><i class="material-icons">send</i></a>
+            </p>
+          </div>
+        </ul>
+      </div>
+      <div class="col m2"></div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+<!-- java script code -->
+<script type="text/javascript">
+$(function(){
+
+      $(document).on('keypress','#globalBookSearch',function(e){
+        // e.preventDefault();
+        if(e.which==13){
+            if($.trim($(this).val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{
+              $('.bookSelectionCount').text("");
+              $(this).val("");
+              $(".globalBookSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($(this).val());
+            }
+        }
+
+      });
+
+      $(document).on('click','.globalSearchButton',function(){
+            if($.trim($("#globalBookSearch").val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{   
+              $('.bookSelectionCount').text("");
+              $(".globalBookSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($("#globalBookSearch").val());
+            }
+      });
+
+      $(document).on('keyup','#globalBookSearch',function(e){
+        if($(this).val()==""){
+          $(".globalBookSearchDropBox").hide();
+        }
+      });
+
+
+      $(document).on('click','.globalSearchBoxContainer',function(){
+        $(this).toggleClass('activate');
+        if($(this).hasClass('activate')){
+          $(this).find('.ReadStatus').show();
+        }
+        else{
+          $(this).find('.ReadStatus').hide();
+        }
+        if($('.activate').length==0){
+        $('.bookSelectionCount').text("");
+        }
+        if($('.activate').length==1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' book', 1000);
+        }
+        if($('.activate').length>1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' books', 1000);
+        }
+      });
+
+      $(document).on('click','.inputBookStatus',function() {
+        if($(".activate").length>0){
+          $(".activate").each(function(){
+            var bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck;
+            bookImage = $(this).find('.globalSearchResultBookCover').attr("src");
+            bookTitle = $(this).find('.title').text();
+            bookAuthor = $(this).find('.bookAuthor').text();
+            bookPublisher = $(this).find('.bookPublisher').text();
+            readCheck = $(this).find('.readCheck').is(":checked");
+            readingCheck = $(this).find('.readingCheck').is(':checked');
+            tobeCheck = $(this).find('.tobeCheck').is(':checked');
+
+            utility.addBookStatus(bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck,"{{user.id}}");
+          }).promise().done(function(){
+            Materialize.toast('We have piled your books!!', 2000);
+            Materialize.toast('Start reading', 2000);
+            $('.globalBookSearchDropBox').hide();
+            $('#globalBookSearch').val('');
+          });
+        }
+      });
+    
+});
+
+</script>
+
+{% endblock %}

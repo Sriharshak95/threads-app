@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<style type="text/css">
+  .overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color:#a9aaaba8;
+}
+
+.card-image:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  top: 13px;
+  left: 90%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.podcast-books-content{
+  padding:10px !important;
+}
+
+.podcast-books-content>span{
+  font-size:14px !important;
+  margin-bottom:0 !important;
+}
+
+.podcastsBooksImage{
+  cursor:pointer;
+}
+
+.podcastsBooksImage>img{
+  height:170px;
+}
+</style>
+{% load static %}
+
+          {% if user.is_authenticated %}
+
+            <section>
+              <div class="container">
+                <div class="row">
+                  <div class="col s3"></div>
+                    <div class="col s6">
+                      <div class="card">
+                        <div class="card-content">
+                        <div class="create-podcast-section">
+                          <h5>Create Book list for Podcast,Blogs and Interviews</h5>
+                          <div class="input-field">
+                            <input id="_subject" type="text" placeholder="Name of the topic(podcast,blogs and Interviews)" class="validate">
+                          </div>
+                          <div class="media-podcast-section">
+                            <div class="input-field">
+                              <input id="_embed" placeholder="Paste embedded code <> or iframe" type="text">
+                              <span class="helper-text _embed-error"></span>
+                            </div>
+                            <div class="_embed_section"></div>
+                          </div>
+                          <div class="add-related-books">
+                            <h6>Search and add books below</h6>                        
+                            <div class="input-field">
+                              <input placeholder="Search for books" id="podcastSearch" type="text">
+                              <a class="btn-floating podcastSearchButton"><i class="material-icons">search</i></a>
+                            </div>
+                             <ul class="collection podcastSearchDropBox" style="display:none;position:absolute;z-index:10;width:90%;">
+                              <div class="liner" style="background:#fff;margin:0;">
+                                <p style="margin:0;padding:10px;">No of Books Selected:&nbsp;<span class="bookSelectionCount"></span>
+                                  <a class="right inputBookStatus"><i class="material-icons">send</i></a>
+                                </p>
+                              </div>
+                            </ul>
+                          </div>
+                          <div class="_decideBooksList row"></div>
+                          <a class="_createPodcast disabled btn">Save</a>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                  <div class="col s3"></div>
+                </div>
+              </div>
+            </section>
+
+          {% else %}
+
+
+          {% endif %} 
+
+
+
+  
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script type="text/javascript">
+  var _subject = "",_embed = "";
+  $("#_subject,#_embed").keyup(function(){
+    _subject = $("#_subject").val();
+    _embed = $("#_embed").val();
+      if(_subject!="" && _embed!=""){
+        
+        $("._createPodcast").removeClass("disabled");
+      
+      }
+      else{
+
+        $("._createPodcast").addClass("disabled"); 
+      
+      }
+  });
+
+  $("#_subject,#_embed").bind('paste',function(){
+    _subject = $("#_subject").val();
+    _embed = $("#_embed").val();
+      if(_subject!="" && _embed!=""){
+        
+        $("._createPodcast").removeClass("disabled");
+      
+      }
+      else{
+
+        $("._createPodcast").addClass("disabled"); 
+      
+      }
+  });
+
+  //=========== validation of iframe and link====================================
+  $(document).on("focusout","#_embed",function(){
+    $("._embed-error").text("");
+    if(_embed.startsWith("<iframe")){
+      $("._embed_section").empty().append(_embed);
+    }
+    else if(_embed.startsWith("https://")){
+      $("._embed_section").empty().append(_embed.link(_embed));
+    }
+    else{
+      $("._embed-error").text("");
+      $("._embed-error").text("Enter URL or iframe");
+    }
+  });
+
+  $(document).on("click","._createPodcast",function(){
+    if($("._embed-error").text()==""){
+
+      // utility.addPodcast(_subject,_embed,"{{user.id}}");
+
+      // $.when(utility.addPodcast(_subject,_embed,"{{user.id}}")).then
+
+
+
+      $(_o_array).each(function(key,value){
+                utility.addPodcastBooks(value.image,value.title,value.author,value.publisher,"{{user.id}}");
+      }).promise().done(function(){
+        Materialize.toast('Books added to this podcast!!', 2000);
+        $('.podcastSearchDropBox').hide();
+        $('#podcastSearch').val('');
+        // location.href = '/podcastpool/';
+      });
+
+    }
+  });
+
+  $(document).on('keypress','#podcastSearch',function(e){
+    // e.preventDefault();
+    if(e.which==13){
+        if($.trim($(this).val())==""){
+          Materialize.toast('Enter Book Name', 1000);
+        }
+        else{
+          $('.bookSelectionCount').text("");
+          $(this).val("");
+          $(".podcastSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+          utility.searchBookList($(this).val());
+        }
+    }
+
+  });
+
+  $(document).on('click','.podcastSearchButton',function(){
+        if($.trim($("#podcastSearch").val())==""){
+          Materialize.toast('Enter Book Name', 1000);
+        }
+        else{ 
+          utility.addPodcast(_subject,_embed,"{{user.id}}");
+          $('.bookSelectionCount').text("");
+          $(".podcastSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+          utility.searchBookList($("#podcastSearch").val());
+        }
+  });
+
+  $(document).on('keyup','#podcastSearch',function(e){
+    if($(this).val()==""){
+      $(".podcastSearchDropBox").hide();
+    }
+  });
+
+
+  $(document).on('click','.globalSearchBoxContainer',function(){
+    $(this).toggleClass('activate');
+    if($(this).hasClass('activate')){
+      $(this).find('.ReadStatus').show();
+    }
+    else{
+      $(this).find('.ReadStatus').hide();
+    }
+    if($('.activate').length==0){
+    $('.bookSelectionCount').text("");
+    }
+    if($('.activate').length==1){
+    $('.bookSelectionCount').text($('.activate').length);
+      Materialize.toast('You have selected '+$('.activate').length+' book', 1000);
+    }
+    if($('.activate').length>1){
+    $('.bookSelectionCount').text($('.activate').length);
+      Materialize.toast('You have selected '+$('.activate').length+' books', 1000);
+    }
+  });
+
+    var _o_array = [];
+  $(document).on('click','.inputBookStatus',function() {
+    if($(".activate").length>0){
+      $(".activate").each(function(){
+        var bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck;
+        bookImage = $(this).find('.globalSearchResultBookCover').attr("src");
+        bookTitle = $(this).find('.title').text();
+        bookAuthor = $(this).find('.bookAuthor').text();
+        bookPublisher = $(this).find('.bookPublisher').text();
+
+        _o_array.push({"image":bookImage,"title":bookTitle,"author":bookAuthor,"publisher":bookPublisher});
+
+        // if(_o_array.length>0){
+        //   $(_o_array).each(function(key,value){
+        //     console.log(value.title);
+        //   });
+        // }
+
+        // else{
+        //   _o_array.push({"image":bookImage,"title":bookTitle,"author":bookAuthor,"publisher":bookPublisher});
+        // }
+
+      });
+
+      $(_o_array).each(function(key,value){
+        $("._decideBooksList").append("<div class='col s3'><div class='card'> <div class='card-image podcastsBooksImage'> <img src='"+value.image+"'/><div class='overlay'><div data-index='"+key+"' class='text _removeBook' title='Remove this book'><i class='far fa-times-circle'></i></div></div></div><div class='card-content podcast-books-content'><span class='card-title center-align'>3 Threads</span></div></div></div>");
+      });
+      $('.podcastSearchDropBox').hide();     
+      // $(".activate").each(function(){
+      //   var bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck;
+      //   bookImage = $(this).find('.globalSearchResultBookCover').attr("src");
+      //   bookTitle = $(this).find('.title').text();
+      //   bookAuthor = $(this).find('.bookAuthor').text();
+      //   bookPublisher = $(this).find('.bookPublisher').text();
+
+      //   utility.addPodcastBooks(bookImage,bookTitle,bookAuthor,bookPublisher,"{{user.id}}");
+      // }).promise().done(function(){
+      //   Materialize.toast('Books added to this podcast!!', 2000);
+      //   $('.podcastSearchDropBox').hide();
+      //   $('#podcastSearch').val('');
+      // });
+    }
+  });
+
+  $(document).on('click','._removeBook',function(){
+    removeFromArray(_o_array,$(this).attr("data-index"));
+    $("._decideBooksList").empty();
+    $(_o_array).each(function(key,value){
+      $("._decideBooksList").append("<div class='col s3'><div class='card'> <div class='card-image podcastsBooksImage'> <img src='"+value.image+"'/><div class='overlay'><div data-index='"+key+"' class='text _removeBook' title='Remove this book'><i class='far fa-times-circle'></i></div></div></div><div class='card-content podcast-books-content'><span class='card-title center-align'>3 Threads</span></div></div></div>");
+    });    
+  });
+
+  function removeFromArray(array, idx) {
+    if (idx !== -1) {
+        array.splice(idx, 1);
+    }
+    return array;
+  }
+</script>
+
+{% endblock %}

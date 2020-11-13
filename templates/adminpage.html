@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% load static %}
+{% block content %}
+
+<style>
+.actived{
+  color: #000;
+  font-weight: bold;
+}
+</style>
+<!-- {{data}} -->
+   <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- /.box -->
+
+          <div class="box">
+            <div class="box-header">
+              <h5 class="box-title">User List :
+              </h5>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th> User Name </th>
+                  <th> last login </th>
+                  <th> Full Name </th>
+                  <th> books created </th>
+                  <th> books </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for b in data %} 
+                  <tr>
+                    <th>
+                     <a href="https://twitter.com/{{b.username}}" target="_blank">
+                      <img src="{{b.user_profile}}" alt="" class="circle responsive-img">
+                    </a></br>
+                     {{b.username}} 
+                   </th>
+                    <th> {{b.last_login}} </th>
+                    <th>{{b.first_name}} {{b.last_name}} </th>
+                    <th> {{b.totalthreadscreatedbyuser}}</th>
+                    <th>
+                        {% for k in b.bookcover_data%}
+
+                        <li>
+                          <a href="/{{b.username}}/{{k.bookcoverid}}">
+                            {{k.name}}</a>
+<!--                         <img src="{{k.image}}" alt="" class="circle responsive-img" style="width:25,height:25" -->
+                        </li>
+
+                        {% endfor%}
+                    </th>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+   </section>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+
+
+{% endblock %}

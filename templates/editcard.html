@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% load static %}
+
+
+
+{% block content %}
+      <style type="text/css">
+
+      </style>
+
+    <div style="position:fixed;left:50px;">
+      <div class="Label card-panel white">
+        <div style="margin-bottom: 10px;" class="row valign-wrapper">
+          <div class="col s9">
+            <h5>{{card.created_by.first_name}} {{card.created_by.last_name}}
+            <a href="https://twitter.com/{{card.created_by.username}}" style="font-size:15px;" target="_blank"><i class="fab fa-twitter"></i></a>
+            </h5>
+          </div>
+          <div class="col s3">
+            <img src="{{card.created_by.twitter_profiles.profile_image_url}}" alt="" class="circle responsive-img">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s2">
+            {% if card.created_by.username != user.username %}                
+            <button class="subscribeButton waves-effect waves-light btn-flat" data-toggle="false">Subscribe<i class="far fa-hand-point-up"></i></button>
+            {% endif %}
+          </div>
+        </div>
+        <div style="margin-bottom: 0;" class="row">
+          <div class="col s6">
+            <p style="margin-top:0;margin-bottom:0;"><span style="font-weight:bold;font-size:18px;"><a href="/{{card.created_by.username}}/list/" class="myReadBooks" title="click to view no of threads">{{totalthreadscreatedbyuser}}</a></span> threads</p>
+          </div>
+          <div class="col s6">
+            <a class="noOfSubscribers" title="click to view subscribers" style="font-weight:600;font-size:18px;" href="#!"></a>
+            <span>subscribers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section style="padding-top:1.5rem;margin-left:350px;">
+      <div class="container">
+        <div class="row">
+          <!-- <div class="col m2"></div> -->
+            <div class="col m8">
+              <div class="card darken-1 subscriberBox">
+                <div class="card-content subscribeHeaderBox">
+                  <span class="card-title center-align" style="margin-bottom:0;">Subscribers</span>
+                </div>
+                <ul class="collection subscribeListBox">
+                </ul>  
+              </div>
+              <div class="card-panel">
+                <div class="right">
+                  <a href="https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw" class="twitter-mention-button" data-text="via:threadsApp" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>&nbsp;&nbsp;<i class="tooltipped material-icons" id="share-link-btn" data-position="top" data-delay='50' data-tooltip='<div class="input-field"><i class="material-icons prefix">content_copy</i><input id="share_link" type="text" class="validate"> <label for="first_name">ShareLink</label> </div>'>insert_link</i>
+                </div>
+                <div class="_newThreadName">
+                  <h5 style="padding-bottom:20px;margin-top:0;">{{card.name}}</h5>
+                </div>
+                <div class="_newThreadImage">
+                    {% if card.image%}
+                    <img style="cursor:pointer;border-bottom-left-radius:10px;border-bottom-right-radius:10px;width:128px;" src="{{card.image.url}}" alt="your image" /> 
+                    {%else%}
+                    <img style="cursor:pointer;width:128px;" src="{{card.url}}" alt="your image" />
+                    {%endif%}
+                    {% if same_threads %}
+                    {% for t in same_threads%}
+                    <a href="/{{t.created_by.username}}/list/" title="{{t.created_by.username}}"><img height="35" width="35" src="{{t.created_by.twitter_profiles.profile_image_url}}" alt="" class="circle"></a>
+                    {% endfor %}
+                    {% endif %}
+<!--                     <a href="/{{t.created_by.username}}/list/" title="Prerith"><img height="35" width="35" src="{% static 'images/pro2.jpg' %}" alt="" class="circle"></a> -->
+                </div>
+              </div>
+<!--               <div class="card" style="box-shadow:none;border:1px solid #999;border-radius:10px;">
+                <div class="card-content white" style="padding:0px 10px;">
+                 <div class="right">
+                    <a href="https://twitter.com/intent/tweet?ref_src=twsrc%5Etfw" class="twitter-mention-button" data-text="via:threadsApp" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>&nbsp;&nbsp;<i class="tooltipped material-icons" id="share-link-btn" data-position="top" data-delay='50' data-tooltip='<div class="input-field"><i class="material-icons prefix">content_copy</i><input id="share_link" type="text" class="validate"> <label for="first_name">ShareLink</label> </div>'>insert_link</i>
+                  </div>
+                  <div>
+                    <h5>{{card.name}}</h5>
+                  </div>
+                </div>
+                <div class="card-image">
+                  <label for="fileInput">
+                    {% if card.image%}
+                    <img id="myImg" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;" src="{{card.image.url}}" alt="your image" /> 
+                    {%else%}
+                    <img id="myImg" src="{{card.url}}" alt="your image" />
+                    {%endif%}
+                  </label>
+                </div>
+              </div> -->              
+            </div>
+          <div class="col m4">
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- <div class="col m2"></div> -->
+            <div class="col m8">         
+              <div class="timeline">
+              <button class="hide addThreadBit waves-effect waves-light btn-flat"><i class="fas fa-plus"></i> Add</button>
+              </div>
+            </div>
+          <div class="col m4">
+            <div id="annotate" class="annotate timeline">
+              <div class="card testcont">
+                <div style="padding: 24px 24px 0 24px;" class="card-content message-content">
+                  <a class="right black-text close_annotate"><i class="far fa-times-circle"></i></a>
+                  <span class="card-title"><i class="far fa-comment-alt"></i> Annotations</span>
+                  <div class="profile_list">
+
+                    <!-- <a href="#" class="right">View More</a>  -->
+                  </div><br/>
+                  <div class="testcontent">
+                    <ul></ul>
+                  </div>
+                </div>
+                <div class="card-content" style="padding: 0 10px 0 10px;border-top: 1px solid #e2dcdc;">
+                  <input id="coms" placeholder="your views..." type="text" class="validate commentReply">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>  
+
+      <!-- =====================delete block comfirmation================= -->
+      <div class="deleteBlock"></div>
+
+  <!-- ====================feedback Section================================= -->
+  <div id="feedback1" class="modal">
+    <div class="modal-content">
+      <p>Thanks for your concern to make this page look great. We'll assess your feedback and come back with more features.</p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div> 
+
+  <div class="card chat-box">
+    <div class="right-align closeChatBox" style="cursor:pointer;color:#cccccc;"><i class="fa fa-times-circle"></i></div>
+    <h5>Help Us Know</h5>
+    <form id="feedbackfromvalue">
+      <div class="input-field">
+        <input placeholder="Your email" id="email_id" name="email" type="email" class="validate" required>
+      </div>
+      <div class="input-field">
+        <textarea id="textarea1" name="comment" placeholder="Let us know how we can improve this page" class="materialize-textarea validate" required></textarea>
+      </div>
+      <button class="sendFeedbackForm waves-effect waves-light btn">send</button>
+    </form>
+  </div>
+  <button class="feedBackForm"><img style="width:25px;" src="{% static 'images/quill.png' %}"></button>
+
+{% endblock %}
+
+
+
+{% block javascript %}
+
+      <script type="text/javascript">
+          $(function () {
+//================================feedbck form submit============================================
+
+          $('#feedbackfromvalue').on('submit',function(e){
+            e.preventDefault();
+            var comment = $('#textarea1').val();
+            var email = $('#email_id').val();
+            utility.submitFeedbackForm("{{user.username}}","{{user.id}}",email,comment);
+          });
+//================================send userid============================================
+          userIdValue = utility.GetUs('{{user.id}}');
+
+          utility.checkSubscribe(userIdValue,'{{card.created_by.id}}');
+
+//===========================subscriber=================================================
+        
+          utility.listSubscribers('{{card.created_by.id}}');
+
+          $(document).on('click','.subscribeButton',function(){
+
+            var subscribeToggle = utility.GetUs($(this).attr("data-subscribe-id"));
+
+            (subscribeToggle=='')?utility.subscribeAction('true','{{card.created_by.id}}',userIdValue):utility.unSubscribeAction('{{card.created_by.id}}',subscribeToggle);
+            
+          });
+
+          $(document).on('click','.noOfSubscribers',function(){
+            $('.subscriberBox').slideToggle();
+            utility.listSubscribers('{{card.created_by.id}}');
+          });
+
+//=========================closeAnnotate=================================================
+          $(document).on('click','.close_annotate',function(){
+            $('.annotate').css('display','none');
+          });
+
+//===============================closethreadbit==========================================
+          $(document).on('click','.closeThreadBit',function(){
+              $(this).parent().parent().parent().remove();
+              ($('.addThreadBit').last().hasClass('disabled'))?($('.addThreadBit').removeClass('disabled')):null;
+          });
+    
+//============display threadbits associated with this thread=====================================
+          var cardID = "{{card.id}}";
+          utility.listThread(cardID);
+
+
+          $(document).on('click','.displayCrud',function(){
+            $(this).fadeOut(function(){
+              $(this).parent().find('.edit,.deleteBit').fadeIn();
+            });
+          });
+
+          $('.commentReply').focusin(function(){
+            $('.testcontent').slideDown();
+            $('html','body').animate({
+              scrollTop:$(this).offset().top
+            },2000);
+          });
+
+
+          $('.commentReply').focusout(function(){
+            $('.testcontent').slideUp();
+          });
+
+
+          $('.tooltipped').tooltip({delay: 50,html:true});
+          $('#share_link').val(window.location.href);
+
+          var x = jQuery._data( document.getElementById('share-link-btn'), "events" )['mouseout'];
+          delete jQuery._data( document.getElementById('share-link-btn'), "events" )['mouseout'];
+          $('.material-tooltip').hover(function(e) {
+            $('#share_link').focus().select();
+              $(this).attr('hover', 1);
+          }, function(e) {
+              $(this).attr('hover', 0);
+              x[0].handler.apply( document.getElementById('share-link-btn'), x );
+          });
+          $('#share-link-btn').on('mouseenter', function(e) {
+              $('.material-tooltip:visible').css('pointer-events', 'auto');
+          }).on('mouseleave', function(e) {
+              setTimeout(function() {
+                  var val = $('.material-tooltip:visible').attr('hover');
+                  if (val == undefined || val == 0) {
+                      x[0].handler.apply( document.getElementById('share-link-btn'), x );
+                  }
+              }, 150);
+          })
+
+
+
+          $(":file").change(function () {
+            $('.createThread').removeClass('disabled');
+              if (this.files && this.files[0]) {
+                  var reader = new FileReader();
+                  reader.onload = imageIsLoaded;
+                  reader.readAsDataURL(this.files[0]);
+              }
+          });
+//=========================subcomments toggle show===============================================
+          $(document).on('click','.annotate-link',function(){
+              $('.annotate').show();
+             var height = $(this).parent().parent().parent().parent().parent().offset();
+             var setId = $(this).attr('id');
+             setId = setId.replace(/[^0-9]/g,'');
+             $('.annotate').attr('id','annotate'+setId);
+             $('.annotate').find('.commentReply').attr('id','coms'+setId);
+             $('.annotate').find('ul').attr('id','commentsList'+setId);
+             $('.annotate').offset({top:height.top}); //animate subcomment box movement
+             utility.listSubComment(setId);    //call subcomment list
+          });
+
+//=========================editthread edit======================================================
+
+          $(document).on('click', '.edit',function(){
+              $(this).attr('data-tooltip','save');
+              $(this).parent().parent().parent().find('.thread-comment').after(" <div class='input-field'> <input class='editSay' id='input_text' type='text' data-length='200'> <label class='active' for='input_text'>What you say?</label> </div>");
+              var msg = $(this).parent().parent().parent().find('.thread-comment').text();
+              $(this).parent().parent().parent().find('.editSay').val(msg);
+              $(this).parent().parent().parent().find('.thread-comment').remove();
+              $(this).children().text('done');
+              $(this).removeClass('edit').addClass('save');
+          });
+
+
+//=========================savethread edit======================================================
+
+          $(document).on('click','.save',function(){
+              $(this).attr('data-tooltip','edit');
+              $(this).parent().parent().parent().find('.input-field').after("<div class='thread-comment'></div>");
+              var msg = $(this).parent().parent().parent().find('.editSay').val();
+              $(this).parent().parent().parent().find('.thread-comment').text(msg);
+              var threadId = $(this).parent().parent().parent().find('.threadId').text();
+              $(this).parent().parent().parent().find('.input-field').remove();
+              $(this).children().text('mode_edit');
+              $(this).removeClass('save').addClass('edit');
+              utility.editThreadBit(msg,threadId,'{{user.id}}','{{card.id}}');
+          });
+
+          $(document).on('click','.addThreadBit',function(){
+              $('.timeline-event').last().after("<div class='timeline-event'> <div class='card timeline-content'> <div class='card-panel z-depth-1'><a class='closeThreadBit right black-text'><i class='material-icons'>close</i></a><div class='valign-wrapper'> <div class='col s12'> <span style='display:none;' class='threadId'>8</span> <div class='input-field'><textarea id='mat' class='editThreadBitSay materialize-textarea' data-length='200' maxlength='200'></textarea><label class='active' for='mat'>What you say?</label> </div> </div> </div> <div style='margin-bottom:4%;'> <div class='left'> &nbsp;<a class='black-text saveThreadBit'><i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>done</i></a> </div> </div> </div> </div> </div>");
+
+              if($('.editThreadBitSay').last().val()==""){
+                $('.addThreadBit').addClass('disabled');
+                $('.saveThreadBit').css({"display":"none"});
+              }
+          }); 
+//==============================addthread between not at last=====================================
+
+          $(document).on('click','.addThreadBitSuc',function(){
+              $(this).parent().parent().parent().parent().parent().after("<div class='timeline-event'> <div class='card timeline-content'> <div class='card-panel z-depth-1'><a class='closeThreadBit right black-text'><i class='material-icons'>close</i></a><div class='valign-wrapper'> <div class='col s12'> <span style='display:none;' class='threadId'>8</span> <div class='input-field'><textarea id='mat' class='editThreadBitSay materialize-textarea' data-length='200' maxlength='200'></textarea><label class='active' for='mat'>What you say?</label> </div> </div> </div> <div style='margin-bottom:4%;'> <div class='left'> &nbsp;<a class='black-text saveThreadBit'><i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>done</i></a> </div> </div> </div> </div> </div>");
+          });
+
+//==============================addthread between not at last=======================<END BLOCK>======
+          $(document).on('keyup','.editThreadBitSay',function(){
+
+            ($(this).val()=="")?$('.addThreadBit').addClass('disabled'):$('.addThreadBit').removeClass('disabled');
+
+            ($(this).val()=="")?$('.saveThreadBit').css({"display":"none"}):$('.saveThreadBit').css({"display":"inline-block"});
+          });
+
+          $(document).on('click','.saveThreadBit',function(){
+            var msg = $('.editThreadBitSay').last().val();
+            $('.saveThreadBit').parent().parent().parent().find('.input-field').after("<div class='thread-comment'></div>");
+            utility.addSingleThreadBit(msg,'{{user.id}}','{{card.id}}');
+
+
+            $('.saveThreadBit').parent().parent().parent().find('.input-field').remove();
+            $('.saveThreadBit').parent().parent().parent().find('.thread-comment').text(msg);
+            // $('.saveThreadBit').parent().removeClass('left').addClass('right');
+            // $('.saveThreadBit').parent().html("<a class='tooltipped black-text addThreadBitSuc' data-position='top' data-delay='50' data-tooltip='add'> <i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>add_circle_outline</i> </a> &nbsp; <a class='tooltipped black-text edit' data-position='top' data-delay='50' data-tooltip='Edit'> <i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>mode_edit</i> </a> &nbsp; <a class='tooltipped black-text modal-trigger deleteBit' href='#modal1' data-position='top' data-delay='50' data-delete-id='' data-tooltip='delete'> <i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>delete</i> </a>");
+
+            $('.saveThreadBit').parent().html("<a class='tooltipped black-text edit' data-position='top' data-delay='50' data-tooltip='Edit'> <i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>mode_edit</i> </a> &nbsp; <a class='tooltipped black-text modal-trigger deleteBit' href='#modal1' data-position='top' data-delay='50' data-delete-id='' data-tooltip='delete'> <i style='font-size:18px;vertical-align:-.125em;' class='material-icons'>delete</i> </a>");            
+            $(this).remove();
+          });
+
+          $(document).on('keyup','.editSay',function(){
+
+            ($(this).val()=="")?$('.addThreadBit').addClass('disabled'):$('.addThreadBit').removeClass('disabled');
+
+            ($(this).val()=="")?$('.saveThreadBit').css({"display":"none"}):$('.saveThreadBit').css({"display":"inline-block"});
+
+          });
+//===============================delete ThreadBit========================================
+          $(document).on('click','.deleteBit',function(){
+             $('.deleteConfirm').attr("data-delete-ack",$(this).attr("data-delete-id"));
+          });
+
+          $(document).on('click','.deleteConfirm',function(){
+            $('.threadId').each(function(){
+              if($('.deleteConfirm').attr('data-delete-ack')==this.innerHTML){
+                $(this).parent().parent().parent().parent().parent().remove();
+                utility.deleteThreadBit($('.deleteConfirm').attr('data-delete-ack'));
+              }
+            });
+          });
+//===================comment for whole thread==========================================
+
+    $(document).on('click','.sendWholeComment',function(){
+      var comment = $('#whole_comment').val();
+        utility.addEntireComment(comment,'{{card.id}}','{{user.id}}');
+    });
+
+//=====================tweet-button-url-sync===========================================
+
+  // $(document).on('click','.twitter-mention-button',function(){
+  //   console.log("wwdd");
+  // });
+
+//=================================submit comments========================================
+
+          $('.commentReply').keypress(function(e){
+            if(e.which==13){
+              var comment = $(this).val();
+
+             var setId = $(this).attr('id');
+             setId = setId.replace(/[^0-9]/g,'');
+
+             var subCommentId = $(this).parent().parent().parent().attr('id');
+             subCommentId = subCommentId.replace(/[^0-9]/g,'');
+
+             if(setId==subCommentId){
+              if($('.testcontent p').length>0){
+              $('.testcontent p').remove();
+              $(this).parent().parent().parent().find('#commentsList'+setId).append("<li class='commentline' style='font-size:14px;'><a class='black-text' href=''><b>{{user.username}} </b></a><span>"+comment+"</span></li>");
+                utility.addSubComment('{{user.id}}',subCommentId,comment);
+                $(this).val('');
+              }
+              else{
+              $(this).parent().parent().parent().find('#commentsList'+setId).append("<li class='commentline' style='font-size:14px;'><a class='black-text' href=''><b>{{user.username}} </b></a><span>"+comment+"</span></li>");
+                utility.addSubComment('{{user.id}}',subCommentId,comment);
+                $(this).val('');
+              }
+             }
+            }         
+          });
+        });
+
+        $(function(){
+
+          $(".button-collapse").sideNav();
+          $('.carousel.carousel-slider').carousel({fullWidth: true});
+          
+          //card reveal
+          $('.activator1').click(function(){
+              $('.card-reveal1').css({"display":"block","transform":"translateY(-100%)"});
+              $('html, body').animate({
+                  scrollTop: $(".card-reveal1").offset().top
+              }, 2000);
+          });
+
+          $('.activator2').click(function(){
+              $('.card-reveal2').css({"display":"block","transform":"translateY(-100%)"});
+              $('html, body').animate({
+                  scrollTop: $(".card-reveal2").offset().top
+              }, 2000);
+          });
+
+          $('.close1').click(function(){
+              $('.card-reveal1').css({"display":"none","transform":"translateY(0)"});
+          });
+
+          $('.close2').click(function(){
+              $('.card-reveal2').css({"display":"none","transform":"translateY(0)"});
+          });
+
+
+        $('#yes,#no').click(function(){
+          if($('#yes').is(':checked')){
+            $(".creatorsDetail").slideDown();
+          }
+          else if($('#no').is(':checked')){
+            $(".creatorsDetail").slideUp();
+          }
+        });
+            $(".creatorsDetail").hide();
+
+        });
+      </script>
+
+{% endblock %}

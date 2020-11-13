@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Home Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+{% load staticfiles %}
+<link href="{% static "css/bootstrap.min.css"%}" rel="stylesheet" media="screen">
+<!-- Custom styles for this template -->
+<link href="{% static "css/main.css"%}" rel="stylesheet" media="screen">
+<link href="{% static "css/font-awesome.min.css"%}" rel="stylesheet" media="screen">
+</head>
+<body>
+	{% csrf_token %}
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&status=0&appId=851665504885759&version=v2.0";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	
+	<script>
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '851665504885759',
+	      xfbml      : true,
+	      version    : 'v2.2'
+	    });
+	  };
+	
+	  (function(d, s, id){
+	     var js, fjs = d.getElementsByTagName(s)[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement(s); js.id = id;
+	     js.src = "//connect.facebook.net/en_US/sdk.js";
+	     fjs.parentNode.insertBefore(js, fjs);
+	   }(document, 'script', 'facebook-jssdk'));
+	</script>
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">My App</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="spacer"></div>
+
+	<div class="container">
+		<div class="content-wrap">
+			<div class="content">
+				{% if success %}
+				<div class="row">
+					<div
+						class="alert alert-dismissable alert-success col-lg-5 col-lg-offset-1">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-hidden="true">&times;</button>
+						<strong>Awesome!</strong> {{success}}
+					</div>
+					<div class="col-lg-6"></div>
+				</div>
+				{% endif %} {% if error %}
+				<div class="row">
+					<div
+						class="alert alert-dismissable alert-danger col-lg-5 col-lg-offset-1">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-hidden="true">&times;</button>
+						<strong>Error!</strong> {{error}}
+					</div>
+					<div class="col-lg-6"></div>
+				</div>
+				{% endif %} <br /> <br />
+				<h1>Welcome, {{user.first_name}}!</h1>
+				<p>Lot of Random content. asdf</p>
+			</div>
+		</div>
+	</div>
+	<!-- JavaScript plugins (requires jQuery) -->
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="/static/js/bootstrap.min.js"></script>
+
+	<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+	<!-- <script src="js/respond.js"></script> -->
+</body>
+</html>

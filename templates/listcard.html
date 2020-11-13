@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% load static %}
+{% block content %}
+
+      <style type="text/css">
+        .card.horizontal .card-image img{
+          height: 150px;
+        }
+        .card-action a{
+          text-transform: none !important;
+        }
+        .linkAction{
+          color: #039be5 !important;
+        }
+
+        .heartAction{
+          color: #eb5a74 !important;
+        }
+        .tweetButton{
+          background-color:#ffffff;
+          border:1px solid #1da1f2;
+          color: #1da1f2;
+        }
+        .tweetButton:hover,.tweetButton:focus,.tweetButton:active{
+          background-color:#1da1f2;
+          border:1px solid #1da1f2;
+          color: #ffffff;
+
+        }
+        .notification-badge{
+          position: relative;
+          right: 0px;
+          top: -16px;
+          color: #ffffff;
+          background-color: #FF4081;
+          margin: 0 -.8em;
+          border-radius: 50%;
+          padding: 1px 5px;
+          font-size:12px;
+        }
+        .thread-content{
+          cursor:pointer;
+        }
+        .subscribedSection{
+          display:none;
+        }
+        .heart {
+ cursor: pointer;
+ height: 50px;
+ width: 50px;
+ background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+ background-position: left;
+ background-repeat:no-repeat;
+ background-size:2900%;
+}
+
+.is_animating {
+  animation: heart-burst 1s steps(28);
+  background-position:right;
+}
+
+@keyframes heart-burst {
+ from {background-position:left;}
+ to { background-position:right;}
+}
+
+.likeCount{
+  bottom:30px;
+  position: absolute;
+  left:20px;
+}
+
+._new-block-content{
+  padding:15px !important;
+}
+
+.likeSection{
+  padding-bottom:10px !important;
+}
+.mb-0{
+  margin-bottom:0;
+}
+
+._new-block-content a{
+  color:#999;
+}
+
+      </style>
+
+    <div style="position:fixed;left:50px;">
+      <div class="Label card-panel white">
+        <div style="margin-bottom: 10px;" class="row valign-wrapper">
+          <div class="col s9">
+            <h5>{{creator.first_name}} {{creator.last_name}}
+            <a href="https://twitter.com/{{creator.username}}" style="font-size:15px;" target="_blank"><i class="fab fa-twitter"></i></a>
+            </h5>
+          </div>
+          <div class="col s3">
+            <a href="https://twitter.com/{{creator.username}}" target="_blank">
+              <img src="{{creator.twitter_profiles.profile_image_url}}" alt="" class="circle responsive-img">
+            </a>
+          </div>
+        </div>
+        <div style="margin-bottom: 0;" class="row">
+          <div class="col s6">
+            <p style="margin-top:0;margin-bottom:0;"><span style="font-weight:bold;"><a href="/{{creator.username}}/list/" class="myReadBooks" title="click to view no of threads">{{totalthreadscreatedbyuser}}</a></span> threads</p>
+          </div>
+          <div class="col s6">
+            <a class="noOfSubscribed" title="click to view your subscribers" style="font-weight:bold;" href="#!">{{SubscribedCreators}}</a>
+            <span>subscribers</span>
+          </div>
+        </div><!-- 
+        <div style="margin-bottom: 0;" class="row">
+          <div class="col s3">
+            <a href="#!" class="readTag tagged sectionActive" title="books which you have read.">Read</a>
+          </div>
+          <div class="col s4">
+            <a href="#!" class="readingTag tagged" title="books which you have been reading.">Reading</a>
+          </div>
+          <div class="col s5">
+            <a href="#!" class="toBeTag tagged" title="books in wishlist.">To Be Read</a>
+          </div>
+        </div> -->
+      </div>  
+      <a title="Your Thread, Stitch Knowledge!" class="createLink" href="/{{user.username}}/createlist/">Create Thread</a>
+    </div>
+
+
+    <section style="padding-top:1.5rem;">
+      <div class="container">
+          <!-- book read section -->
+        <div class="bookReadSection">
+<!--           <div class="right">
+            <button class="switchDesign" title="list-view"><i class="fas fa-th-list"></i></button>
+            <button class="switchDesign active" title="grid-view"><i class="fas fa-th"></i></button>
+          </div> -->
+          <div class="row">
+            <div class="col s2"></div>
+            <div class="col s7">
+              <ul class="listThread">                
+              </ul>
+            </div>
+            <div class="col s2"></div>
+            <!-- <div class="col l3"> <div class="card" style="height:345px;"> </div> </div> -->
+          </div>
+          <div class="row gridThread" style="margin-left:350px;">
+
+          </div>
+        </div>
+          <!-- subscribed section -->
+        <div class="subscribedSection" style="margin-left:350px;">
+          <h4 style="padding-bottom:1rem;">Your Subscribed Creators</h4>
+          <div class="row subscribedCreatorsList">           
+          </div>
+        </div>
+
+      </div>
+  
+  <!-- ====================feedback Section================================= -->
+  <div id="feedback1" class="modal">
+    <div class="modal-content">
+      <p>Thanks for your concern to make this page look great. We'll assess your feedback and come back with more features.</p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div> 
+
+  <div class="card chat-box">
+    <div class="right-align closeChatBox" style="cursor:pointer;color:#cccccc;"><i class="fa fa-times-circle"></i></div>
+    <h5>Help Us Know</h5>
+    <form id="feedbackfromvalue">
+      <div class="input-field">
+        <input placeholder="Your email" id="email_id" name="email" type="email" class="validate" required>
+      </div>
+      <div class="input-field">
+        <textarea id="textarea1" name="comment" placeholder="Let us know how we can improve this page" class="materialize-textarea validate" required></textarea>
+      </div>
+      <button class="sendFeedbackForm waves-effect waves-light btn">send</button>
+    </form>
+  </div>
+  <button class="feedBackForm"><img style="width:25px;" src="{% static 'images/quill.png' %}"></button>
+    </section>  
+
+    <!--=========================Release Notes===================================-->
+<!--       <div id="releaseNotes" class="modal modal-fixed-footer">
+	    <div class="modal-content">
+	      <h5><u>Updates</u></h5>
+	      <p>** If you are reading a book, or know a lot about a book that you have read, use this tool</p>
+		  <p>** Just with a Link you can share it to your contacts on any channels ( whatsapp/facebook/twitter)</p>
+		  <p>** Segregte into what you are Reading, Read, To Be</p>
+		  <p>** Follow Book lovers who share interesting thoughts on the book</p>
+		  <p>** Invite people who you think are really value add to you</p><br/>
+	      <h5><u>In the next version you will see:</u></h5>
+	      <p>** A way to collect feedback from readers to make this app more useful and value add</p>
+		  <p>** Get Publishers share information about interesting books</p>
+		  <p>** Talk with cafes/ places where books make more meaning while sipping a cup of tea/coffee, suggest and do connect us</p>
+		  <p>** We want to have users stumble on the other reader because of need/experience/exploring something, and it connects</p><br/>
+	      <h5><u>In the next version you will see:</u></h5>
+	      <p>** A way to collect feedback from readers to make this app more useful and value add</p>
+		  <p>** Get Publishers share information about interesting books</p>
+		  <p>** Talk with cafes/ places where books make more meaning while sipping a cup of tea/coffee, suggest and do connect us</p>
+		  <p>** We want to have users stumble on the other reader because of need/experience/exploring something, and it connects</p><br/>
+	    </div>
+	    <div class="modal-footer">
+	      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Ok</a>
+	    </div>
+	  </div> -->
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script>  
+  $(function(){
+
+
+    if($(".fa-th-list").parent().hasClass("active")){
+      $(".listThread").show();
+      $(".gridThread").hide();
+    }
+    if($(".fa-th").parent().hasClass("active")){
+      $(".listThread").hide();
+      $(".gridThread").show();
+    }
+
+    $(".button-collapse").sideNav();
+    $('.carousel.carousel-slider').carousel({fullWidth: true});
+
+    utility.listCard('{{creator.id}}');
+    utility.listBookStatus('{{creator.id}}');
+    utility.listSubscribedCreators('{{creator.id}}');
+    //release notes
+  	if(sessionStorage.getItem("thisSession")==null){
+
+    	$('#releaseNotes').modal('open');
+    	sessionStorage.setItem("thisSession","{{creator.username}}");
+  	}
+
+    $(document).on('click','.thread-content',function(){
+        window.location.href=$(this).parent().parent().find('.card-image').find('a').attr("href");
+    });
+
+    $(document).on('click','.noOfSubscribed',function(){
+      $('.bookReadSection,.readBlock,.readingBlock,.toBeBlock').hide(function(){
+        $('.subscribedSection').show();
+      });
+    });
+
+
+    $('#feedbackfromvalue').on('submit',function(e){
+      e.preventDefault();
+      var comment = $('#textarea1').val();
+      var email = $('#email_id').val();
+      utility.submitFeedbackForm("{{user.username}}","{{user.id}}",email,comment);
+    });
+
+    $(document).on('click','.myReadBooks',function(){
+      $('html, body').animate({
+          scrollTop:0
+      }, 1000);
+      $('.subscribedSection,.readBlock,.readingBlock,.toBeBlock').hide(function(){
+        $('.bookReadSection').show(); 
+      });
+    });
+
+    $(document).on('click','.switchDesign',function(){
+      $(".switchDesign").removeClass("active");
+      $(this).addClass("active");
+      if($(".fa-th-list").parent().hasClass("active")){
+        $(".listThread").show();
+        $(".gridThread").hide();
+      }
+      if($(".fa-th").parent().hasClass("active")){
+        $(".listThread").hide();
+        $(".gridThread").show();
+      }
+    });
+
+    // $(document).on('click','.heart', function(){
+    //   $(this).toggleClass('is_animating');
+    // });
+
+    // $(document).on('animationend','.heart', function(){
+    //  $(this).toggleClass('is_animating');
+    // });
+
+    //===========================Read status section=============================================
+
+    function displaySection(section){
+      $(section).fadeIn();    
+    }
+
+
+    $(".tagged").click(function() {
+      $(".tagged").removeClass("sectionActive");
+      $(this).addClass("sectionActive");
+
+      if($(".readTag").hasClass('sectionActive')){
+        $('.bookReadSection,.subscribedSection,.readingBlock,.toBeBlock').hide(function(){
+          displaySection(".readBlock");
+        });
+      }
+
+      if($(".readingTag").hasClass('sectionActive')){
+        $('.bookReadSection,.subscribedSection,.readBlock,.toBeBlock').hide(function(){
+          displaySection(".readingBlock");
+        });       
+      }
+
+      if($(".toBeTag").hasClass('sectionActive')){
+        $('.bookReadSection,.subscribedSection,.readBlock,.readingBlock').hide(function(){
+          displaySection(".toBeBlock");
+        });  
+      }
+    });
+//==================================like section=============================================
+    $(document).on('click','.likeToggle',function(){
+      if($(this).attr("data-creator")!=="{{user.id}}"){
+
+        ($(this).find('svg').attr('data-prefix')==='far')?($(this).find('svg').attr('data-prefix','fas'),utility.likeThread($(this).attr("data-bookcover-id")),$(this).find('svg').css('color','#FF0047')):($(this).find('svg').attr('data-prefix','far'),utility.unlikeThread($(this).attr("data-bookcover-id")),$(this).find('svg').css('color','#999999'));
+        // if($(this).attr("data-like-id")=="0"){
+        //   utility.likeThread($(this).attr("data-bookcover-id"));
+        // }
+        // else if($(this).attr("data-like-id")!=="0"){
+        //   utility.unlikeThread($(this).attr("data-bookcover-id"));
+        // }
+      }
+      else{
+        return null;
+      }
+
+    });
+//=================status change for books on trigger(PATCH)===================================
+    $(document).on('click','.statusChange',function(){
+        var readStatus=$(this).attr("data-read-state");
+        var readingStatus=$(this).attr("data-reading-state");
+        var tobeStatus=$(this).attr("data-tobe-state");
+        var bookId = $(this).attr("data-id");
+        utility.changeBookStatus(readStatus,readingStatus,tobeStatus,bookId,'{{user.id}}');
+    });
+    
+  });
+</script>
+<script type="text/javascript">
+$(function(){
+
+      $(document).on('keypress','#globalBookSearch',function(e){
+        // e.preventDefault();
+        if(e.which==13){
+            if($.trim($(this).val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{
+              $('.bookSelectionCount').text("");
+              $(this).val("");
+              $(".globalBookSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($(this).val());
+            }
+        }
+
+      });
+
+      $(document).on('click','.globalSearchButton',function(){
+            if($.trim($("#globalBookSearch").val())==""){
+              Materialize.toast('Enter Book Name', 1000);
+            }
+            else{   
+              $('.bookSelectionCount').text("");
+              $(".globalBookSearchDropBox").find('li').remove().append("<li class='collection-item avatar'>Loading</li>");
+              utility.searchBookList($("#globalBookSearch").val());
+            }
+      });
+
+      $(document).on('keyup','#globalBookSearch',function(e){
+        if($(this).val()==""){
+          $(".globalBookSearchDropBox").hide();
+        }
+      });
+
+
+      $(document).on('click','.globalSearchBoxContainer',function(){
+        $(this).toggleClass('activate');
+        if($(this).hasClass('activate')){
+          $(this).find('.ReadStatus').show();
+        }
+        else{
+          $(this).find('.ReadStatus').hide();
+        }
+        if($('.activate').length==0){
+        $('.bookSelectionCount').text("");
+        }
+        if($('.activate').length==1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' book', 1000);
+        }
+        if($('.activate').length>1){
+        $('.bookSelectionCount').text($('.activate').length);
+          Materialize.toast('You have selected '+$('.activate').length+' books', 1000);
+        }
+      });
+
+      $(document).on('click','.inputBookStatus',function() {
+        if($(".activate").length>0){
+          $(".activate").each(function(){
+            var bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck;
+            bookImage = $(this).find('.globalSearchResultBookCover').attr("src");
+            bookTitle = $(this).find('.title').text();
+            bookAuthor = $(this).find('.bookAuthor').text();
+            bookPublisher = $(this).find('.bookPublisher').text();
+            readCheck = $(this).find('.readCheck').is(":checked");
+            readingCheck = $(this).find('.readingCheck').is(':checked');
+            tobeCheck = $(this).find('.tobeCheck').is(':checked');
+
+            utility.addBookStatus(bookImage,bookTitle,bookAuthor,bookPublisher,readCheck,readingCheck,tobeCheck,"{{user.id}}");
+          }).promise().done(function(){
+            Materialize.toast('We have piled your books!!', 2000);
+            Materialize.toast('Start reading', 2000);
+            $('.globalBookSearchDropBox').hide();
+            $('#globalBookSearch').val('');
+          });
+        }
+      });
+    
+});
+
+</script>
+
+{% endblock %}

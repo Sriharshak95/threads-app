@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<style type="text/css">
+  iframe{
+    width:200px;
+  }
+  ._lists{
+    list-style-type:disc !important;
+    color:#999;
+  }
+  ._lists>a{
+    color:#999;
+    font-size:13px; 
+  }
+  .booklists{
+    padding-left:18px !important;
+  }
+  ._toolList>a{
+    padding-left:10px;
+    font-size:13px;
+  }
+  .podcastDel{
+    color:#f44336;
+  }
+  .podcastEdit{
+    color:#2196f3;
+  }
+  .createPodcast{
+    display:none;
+  }
+  .podcastListCard{
+    height:290px;
+  }
+</style>
+          {% if user.is_authenticated %}
+
+            <section>
+              <div class="container">
+                <div class="row">
+            <a title="Bring creators, close." class="createPodcast" href="/createpodcast/">Create Collections</a>
+                  <div class="col s2"></div>
+                    <div class="col s8">
+                      <div class="row _listPodcasts">
+                      </div>
+                    </div>
+                  <div class="col s2"></div>
+                </div>
+              </div>
+            </section>
+
+          {% else %}
+
+
+          {% endif %} 
+
+
+
+  
+
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+  $(function(){
+
+    //list podcast
+    utility.listPodcast("{{user.id}}");
+
+    //list books under podcast
+    $(document).on("click","._podcastBookLinks",function(){
+      utility.listPodcastBooks(this);
+    });
+
+    $(document).on("click",".podcastDel",function(){
+      utility.deletePodcast(this,"{{user.id}}");
+    });
+
+  });
+</script>
+
+{% endblock %}
